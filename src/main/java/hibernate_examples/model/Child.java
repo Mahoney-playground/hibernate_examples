@@ -1,55 +1,43 @@
 package hibernate_examples.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import java.util.UUID;
+
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
-@Table(name="CHILD", uniqueConstraints = @UniqueConstraint(columnNames = {"NAME", "PARENT_ID"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"NAME", "PARENT_ID"}))
 public class Child {
 
-    private Long id;
+    @Id
+    private UUID id;
+
     private String name;
+
+    @ManyToOne(fetch = LAZY)
     private Parent parent;
 
-    private Child() {}
-
     Child(Parent parent, String name) {
+        this.id = UUID.randomUUID();
         this.parent = parent;
         this.name = name;
     }
 
-    @Id
-    @GeneratedValue
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    private void setId(Long id) {
-        this.id = id;
-    }
-
-    @Column(name = "NAME")
     public String getName() {
         return name;
     }
 
-    private void setName(String name) {
-        this.name = name;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
     public Parent getParent() {
         return parent;
-    }
-
-    private void setParent(Parent parent) {
-        this.parent = parent;
     }
 
     @Override
@@ -57,7 +45,7 @@ public class Child {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Child child = (Child) o;
+        final Child child = (Child) o;
 
         if (!name.equals(child.name)) return false;
         if (!parent.equals(child.parent)) return false;
@@ -78,4 +66,6 @@ public class Child {
                 "name='" + name + '\'' +
                 '}';
     }
+
+    private Child() {}
 }

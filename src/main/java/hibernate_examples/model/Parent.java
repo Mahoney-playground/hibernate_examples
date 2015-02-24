@@ -1,63 +1,54 @@
 package hibernate_examples.model;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
-@Table(name="PARENT", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class Parent {
 
-    private Long id;
+    @Id
+    private UUID id;
+
     private String name;
+
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Child> children = new HashSet<>();
 
-    private Parent() {}
-
     public Parent(String name) {
+        this.id = UUID.randomUUID();
         this.name = name;
     }
 
-    @Id
-    @GeneratedValue
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    private void setId(Long id) {
-        this.id = id;
-    }
-
-    @Column(name = "NAME")
     public String getName() {
         return name;
     }
 
-    private void setName(String name) {
-        this.name = name;
-    }
-
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<Child> getChildren() {
         return children;
     }
 
-    private void setChildren(Set<Child> children) {
-        this.children = children;
-    }
-
     public Child addChild(String name) {
-        Child child = new Child(this, name);
+        final Child child = new Child(this, name);
         children.add(child);
         return child;
+    }
+
+    public void replaceChild(String name) {
+        children.clear();
+        addChild(name);
     }
 
     @Override
@@ -65,7 +56,7 @@ public class Parent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Parent child = (Parent) o;
+        final Parent child = (Parent) o;
 
         if (!name.equals(child.name)) return false;
 
@@ -85,8 +76,7 @@ public class Parent {
                 '}';
     }
 
-    public void replaceChild(String name) {
-        children.clear();
-        addChild(name);
+    // Solely for Hibernate
+    private Parent() {
     }
 }
