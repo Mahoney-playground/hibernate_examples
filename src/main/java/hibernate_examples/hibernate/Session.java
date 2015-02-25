@@ -38,7 +38,11 @@ public class Session implements AutoCloseable {
         return (T) session.get(type, id);
     }
 
-    public Serializable save(Object entity) {
+    public Serializable save(Entity entity) {
         return session.save(entity);
+    }
+
+    public void delete(Entity entity) {
+        session.delete(entity);
     }
 }

@@ -1,6 +1,8 @@
 package hibernate_examples.model;
 
-import javax.persistence.CascadeType;
+import com.google.common.collect.ImmutableSet;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -11,21 +13,26 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static javax.persistence.CascadeType.ALL;
+
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
-public class Parent {
+public class Parent implements hibernate_examples.hibernate.Entity {
 
     @Id
     private UUID id;
 
+    @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Child> children = new HashSet<>();
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
+    private Set<Child> children;
 
     public Parent(String name) {
         this.id = UUID.randomUUID();
-        this.name = name;
+        this.name = checkNotNull(name);
+        this.children = new HashSet<>();
     }
 
     public UUID getId() {
@@ -36,8 +43,8 @@ public class Parent {
         return name;
     }
 
-    public Set<Child> getChildren() {
-        return children;
+    public ImmutableSet<Child> getChildren() {
+        return ImmutableSet.copyOf(children);
     }
 
     public Child addChild(String name) {
@@ -58,9 +65,7 @@ public class Parent {
 
         final Parent child = (Parent) o;
 
-        if (!name.equals(child.name)) return false;
-
-        return true;
+        return name.equals(child.name);
     }
 
     @Override

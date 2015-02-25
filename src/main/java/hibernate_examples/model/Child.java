@@ -1,5 +1,6 @@
 package hibernate_examples.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -8,6 +9,9 @@ import javax.persistence.UniqueConstraint;
 
 import java.util.UUID;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.hash;
+import static java.util.UUID.randomUUID;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -17,15 +21,16 @@ public class Child {
     @Id
     private UUID id;
 
+    @Column(nullable = false)
     private String name;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, optional = false)
     private Parent parent;
 
     Child(Parent parent, String name) {
-        this.id = UUID.randomUUID();
-        this.parent = parent;
-        this.name = name;
+        this.id = randomUUID();
+        this.parent = checkNotNull(parent);
+        this.name = checkNotNull(name);
     }
 
     public UUID getId() {
@@ -47,17 +52,13 @@ public class Child {
 
         final Child child = (Child) o;
 
-        if (!name.equals(child.name)) return false;
-        if (!parent.equals(child.parent)) return false;
-
-        return true;
+        return  name.equals(child.name) &&
+                parent.equals(child.parent);
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + parent.hashCode();
-        return result;
+        return hash(name, parent);
     }
 
     @Override
