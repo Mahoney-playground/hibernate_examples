@@ -54,6 +54,41 @@ public class ReplaceChildTest {
     }
 
     @Test
+    public void replaceAllChildren() throws SQLException {
+
+        testReplaceAllChildren("child1", "child2");
+    }
+
+    @Test
+    public void replaceAllChildrenWithSame() throws SQLException {
+
+        testReplaceAllChildren("child1", "child1");
+    }
+
+    private void testReplaceAllChildren(final String initialChildName, final String newChildName) {
+
+        final Serializable parentId = sessionFactory.withSession(session -> {
+            final Parent parent = new Parent("parent");
+            parent.addChild("unchanged");
+            parent.addChild(initialChildName);
+            return session.save(parent);
+        });
+
+        sessionFactory.withSession(session -> {
+            session.load(Parent.class, parentId)
+                    .replaceAllChildrenWith(newChildName);
+            return null;
+        });
+
+        sessionFactory.withSession(session -> {
+            final Parent parent = session.load(Parent.class, parentId);
+            final Set<String> namesOfChildren = parent.getChildren().stream().map(Child::getName).collect(toSet());
+            assertThat(namesOfChildren, is(of(newChildName)));
+            return null;
+        });
+    }
+
+    @Test
     public void replaceChild() throws SQLException {
 
         testReplaceChild("child1", "child2");
@@ -69,22 +104,22 @@ public class ReplaceChildTest {
 
         final Serializable parentId = sessionFactory.withSession(session -> {
             final Parent parent = new Parent("parent");
+            parent.addChild("unchanged");
             parent.addChild(initialChildName);
             return session.save(parent);
         });
 
         sessionFactory.withSession(session -> {
             session.load(Parent.class, parentId)
-                    .replaceChild(newChildName);
+                    .replaceChild(initialChildName, newChildName);
             return null;
         });
 
         sessionFactory.withSession(session -> {
             final Parent parent = session.load(Parent.class, parentId);
             final Set<String> namesOfChildren = parent.getChildren().stream().map(Child::getName).collect(toSet());
-            assertThat(namesOfChildren, is(of(newChildName)));
+            assertThat(namesOfChildren, is(of("unchanged", newChildName)));
             return null;
         });
     }
-
 }

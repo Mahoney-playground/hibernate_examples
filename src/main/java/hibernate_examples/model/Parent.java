@@ -53,7 +53,12 @@ public class Parent implements hibernate_examples.hibernate.Entity {
         return child;
     }
 
-    public void replaceChild(String name) {
+    public Child replaceChild(String initialChildName, String newChildName) {
+        children.removeIf(child -> child.getName().equals(initialChildName));
+        return addChild(newChildName);
+    }
+
+    public void replaceAllChildrenWith(String name) {
         children.clear();
         addChild(name);
     }
