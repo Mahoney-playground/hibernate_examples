@@ -1,7 +1,5 @@
 package hibernate_examples.model;
 
-import com.google.common.collect.ImmutableSet;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableSet;
 import static javax.persistence.CascadeType.ALL;
 
 @Entity
@@ -43,8 +42,8 @@ public class Parent implements hibernate_examples.hibernate.Entity {
         return name;
     }
 
-    public ImmutableSet<Child> getChildren() {
-        return ImmutableSet.copyOf(children);
+    public Set<Child> getChildren() {
+        return unmodifiableSet(children);
     }
 
     public Child addChild(String name) {
@@ -52,12 +51,16 @@ public class Parent implements hibernate_examples.hibernate.Entity {
         if (children.add(child))
             return child;
         else
-            return children.stream().filter(candidate -> child.equals(candidate)).findFirst().get();
+            return children.stream().filter(child::equals).findFirst().get();
     }
 
     public Child replaceChild(String initialChildName, String newChildName) {
-        children.removeIf(child -> child.getName().equals(initialChildName));
+        removeChild(initialChildName);
         return addChild(newChildName);
+    }
+
+    public void removeChild(String initialChildName) {
+        children.removeIf(child -> child.getName().equals(initialChildName));
     }
 
     public Child replaceAllChildrenWith(String name) {
