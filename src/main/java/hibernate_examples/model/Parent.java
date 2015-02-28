@@ -49,8 +49,10 @@ public class Parent implements hibernate_examples.hibernate.Entity {
 
     public Child addChild(String name) {
         final Child child = new Child(this, name);
-        children.add(child);
-        return child;
+        if (children.add(child))
+            return child;
+        else
+            return children.stream().filter(candidate -> child.equals(candidate)).findFirst().get();
     }
 
     public Child replaceChild(String initialChildName, String newChildName) {
@@ -58,9 +60,9 @@ public class Parent implements hibernate_examples.hibernate.Entity {
         return addChild(newChildName);
     }
 
-    public void replaceAllChildrenWith(String name) {
+    public Child replaceAllChildrenWith(String name) {
         children.clear();
-        addChild(name);
+        return addChild(name);
     }
 
     @Override
