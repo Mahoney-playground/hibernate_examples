@@ -48,7 +48,7 @@ public class Child {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
 
@@ -59,12 +59,12 @@ public class Child {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return hash(getName(), getParent());
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "Child{" +
                 "name='" + getName() + '\'' +
                 '}';

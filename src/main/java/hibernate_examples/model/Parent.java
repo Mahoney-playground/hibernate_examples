@@ -71,7 +71,7 @@ public class Parent implements hibernate_examples.hibernate.Entity {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
 
@@ -81,12 +81,12 @@ public class Parent implements hibernate_examples.hibernate.Entity {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return getName().hashCode();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "Parent{" +
                 "name='" + getName() + '\'' +
                 ", children=" + getChildren() +
