@@ -17,10 +17,6 @@ import static org.junit.Assert.assertThat;
 
 public class ReplaceChildTest {
 
-    static {
-        System.setProperty("org.jboss.logging.provider", "slf4j");
-    }
-
     private final SessionFactory sessionFactory = TestSessionFactory.buildSessionFactory();
 
     @Test

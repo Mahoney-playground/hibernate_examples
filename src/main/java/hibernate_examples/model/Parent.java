@@ -1,5 +1,7 @@
 package hibernate_examples.model;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -71,27 +73,27 @@ public class Parent implements hibernate_examples.hibernate.Entity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
 
         final Parent child = (Parent) o;
 
-        return name.equals(child.name);
+        return getName().equals(child.getName());
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return getName().hashCode();
     }
 
     @Override
     public String toString() {
         return "Parent{" +
-                "name='" + name + '\'' +
-                ", children=" + children +
+                "name='" + getName() + '\'' +
+                ", children=" + getChildren() +
                 '}';
     }
 
     // Solely for Hibernate
-    private Parent() {
+    protected Parent() {
     }
 }

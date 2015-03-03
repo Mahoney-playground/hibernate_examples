@@ -10,6 +10,10 @@ import org.hibernate.service.ServiceRegistry;
 
 public class TestSessionFactory {
 
+    static {
+        System.setProperty("org.jboss.logging.provider", "slf4j");
+    }
+
     public static SessionFactory buildSessionFactory() {
         return new SessionFactory(buildHibernateSessionFactory());
     }

@@ -1,5 +1,7 @@
 package hibernate_examples.model;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -48,25 +50,26 @@ public class Child {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
 
         final Child child = (Child) o;
 
-        return  name.equals(child.name) &&
-                parent.equals(child.parent);
+        return  getName().equals(child.getName()) &&
+                getParent().equals(child.getParent());
     }
 
     @Override
     public int hashCode() {
-        return hash(name, parent);
+        return hash(getName(), getParent());
     }
 
     @Override
     public String toString() {
         return "Child{" +
-                "name='" + name + '\'' +
+                "name='" + getName() + '\'' +
                 '}';
     }
 
-    private Child() {}
+    // Solely for Hibernate
+    protected Child() {}
 }
