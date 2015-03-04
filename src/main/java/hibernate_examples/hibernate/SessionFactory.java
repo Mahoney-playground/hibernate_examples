@@ -1,19 +1,10 @@
 package hibernate_examples.hibernate;
 
-import java.util.function.Function;
+import hibernate_examples.lang.Factory;
 
-public class SessionFactory {
-
-    private final org.hibernate.SessionFactory sessionFactory;
-
+public class SessionFactory extends Factory<Session> {
 
     public SessionFactory(org.hibernate.SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    public <T> T withSession(Function<Session, T> work) {
-        try (Session session = new Session(sessionFactory.openSession())) {
-            return work.apply(session);
-        }
+        super(() -> new Session(sessionFactory.openSession()));
     }
 }

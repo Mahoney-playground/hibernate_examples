@@ -21,9 +21,9 @@ public class ReplaceChildTest {
 
     @Test
     public void createAndRetrieveParentWithNoChildren() throws Exception {
-        final Serializable parentId = sessionFactory.withSession(session -> session.save(new Parent("parent")));
+        final Serializable parentId = sessionFactory.with(session -> session.save(new Parent("parent")));
 
-        sessionFactory.withSession(session -> {
+        sessionFactory.with(session -> {
             final Parent parent = session.load(Parent.class, parentId);
             Parent expected = new Parent("parent");
             assertThat(parent, is(expected));
@@ -34,13 +34,13 @@ public class ReplaceChildTest {
 
     @Test
     public void createAndRetrieveParent() throws Exception {
-        final Serializable parentId = sessionFactory.withSession(session -> {
+        final Serializable parentId = sessionFactory.with(session -> {
             final Parent parent = new Parent("parent");
             parent.addChild("child");
             return session.save(parent);
         });
 
-        sessionFactory.withSession(session -> {
+        sessionFactory.with(session -> {
             final Parent parent = session.load(Parent.class, parentId);
             Parent expected = new Parent("parent");
             expected.addChild("child");
@@ -63,20 +63,20 @@ public class ReplaceChildTest {
 
     private void testReplaceAllChildren(final String initialChildName, final String newChildName) {
 
-        final Serializable parentId = sessionFactory.withSession(session -> {
+        final Serializable parentId = sessionFactory.with(session -> {
             final Parent parent = new Parent("parent");
             parent.addChild("unchanged");
             parent.addChild(initialChildName);
             return session.save(parent);
         });
 
-        sessionFactory.withSession(session -> {
+        sessionFactory.with(session -> {
             session.load(Parent.class, parentId)
                     .replaceAllChildrenWith(newChildName);
             return null;
         });
 
-        sessionFactory.withSession(session -> {
+        sessionFactory.with(session -> {
             final Parent parent = session.load(Parent.class, parentId);
             final Set<String> namesOfChildren = parent.getChildren().stream().map(Child::getName).collect(toSet());
             assertThat(namesOfChildren, is(of(newChildName)));
@@ -98,20 +98,20 @@ public class ReplaceChildTest {
 
     private void testReplaceChild(final String initialChildName, final String newChildName) {
 
-        final Serializable parentId = sessionFactory.withSession(session -> {
+        final Serializable parentId = sessionFactory.with(session -> {
             final Parent parent = new Parent("parent");
             parent.addChild("unchanged");
             parent.addChild(initialChildName);
             return session.save(parent);
         });
 
-        sessionFactory.withSession(session -> {
+        sessionFactory.with(session -> {
             session.load(Parent.class, parentId)
                     .replaceChild(initialChildName, newChildName);
             return null;
         });
 
-        sessionFactory.withSession(session -> {
+        sessionFactory.with(session -> {
             final Parent parent = session.load(Parent.class, parentId);
             final Set<String> namesOfChildren = parent.getChildren().stream().map(Child::getName).collect(toSet());
             assertThat(namesOfChildren, is(of("unchanged", newChildName)));

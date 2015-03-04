@@ -6,12 +6,7 @@ import hibernate_examples.model.Parent;
 import org.junit.Test;
 
 import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.Set;
 
-import static com.google.common.collect.ImmutableSet.of;
-import static java.util.Collections.emptySet;
-import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -21,13 +16,13 @@ public class ChildEqualsTest {
 
     @Test
     public void comparePersistedAndUnpersistedChild() throws Exception {
-        final Serializable childId = sessionFactory.withSession(session -> {
+        final Serializable childId = sessionFactory.with(session -> {
             Parent parent = new Parent("parent");
             session.save(parent);
             return parent.addChild("child").getId();
         });
 
-        sessionFactory.withSession(session -> {
+        sessionFactory.with(session -> {
             Parent unpersistedParent = new Parent("parent");
             Child unpersistedChild = unpersistedParent.addChild("child");
 

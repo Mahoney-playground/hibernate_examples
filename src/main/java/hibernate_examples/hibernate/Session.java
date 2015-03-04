@@ -1,5 +1,6 @@
 package hibernate_examples.hibernate;
 
+import hibernate_examples.lang.Resource;
 import org.hibernate.HibernateException;
 
 import java.io.Serializable;
@@ -8,11 +9,11 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
 
-public class Session implements AutoCloseable {
+public class Session implements Resource {
 
     private final org.hibernate.Session session;
 
-    public Session(org.hibernate.Session session) {
+    Session(org.hibernate.Session session) {
         this.session = session;
     }
 
