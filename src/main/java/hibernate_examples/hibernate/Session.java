@@ -3,8 +3,9 @@ package hibernate_examples.hibernate;
 import hibernate_examples.lang.Resource;
 import org.hibernate.HibernateException;
 
-import java.io.Serializable;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
@@ -19,15 +20,18 @@ public class Session implements Resource {
 
     @Override
     public void close() throws HibernateException {
-        session.flush();
-        session.close();
+        try {
+            session.flush();
+        } finally {
+            session.close();
+        }
     }
 
-    public <T> Optional<T> get(Class<T> type, Serializable id) {
+    public <T extends Entity> Optional<T> get(Class<T> type, UUID id) {
         return ofNullable(doGet(type, id));
     }
 
-    public <T> T load(Class<T> type, Serializable id) {
+    public <T extends Entity> T load(Class<T> type, UUID id) {
         return checkNotNull(
                 doGet(type, id),
                 "Failed to load %s for id %s", type, id
@@ -35,15 +39,20 @@ public class Session implements Resource {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T doGet(Class<T> type, Serializable id) {
+    private <T extends Entity> T doGet(Class<T> type, UUID id) {
         return (T) session.get(type, id);
     }
 
-    public Serializable save(Entity entity) {
-        return session.save(entity);
+    public <T extends Entity> T save(T transientEntity) {
+        session.saveOrUpdate(transientEntity);
+        return transientEntity;
     }
 
     public void delete(Entity entity) {
         session.delete(entity);
+    }
+
+    public <T> Collection<? extends T> loadAll(Class<T> type) {
+        return session.createCriteria(type).list();
     }
 }

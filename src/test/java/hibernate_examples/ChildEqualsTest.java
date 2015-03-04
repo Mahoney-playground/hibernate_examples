@@ -5,7 +5,7 @@ import hibernate_examples.model.Child;
 import hibernate_examples.model.Parent;
 import org.junit.Test;
 
-import java.io.Serializable;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -16,7 +16,7 @@ public class ChildEqualsTest {
 
     @Test
     public void comparePersistedAndUnpersistedChild() throws Exception {
-        final Serializable childId = sessionFactory.with(session -> {
+        final UUID childId = sessionFactory.with(session -> {
             Parent parent = new Parent("parent");
             session.save(parent);
             return parent.addChild("child").getId();

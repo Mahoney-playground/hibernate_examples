@@ -5,9 +5,9 @@ import hibernate_examples.model.Child;
 import hibernate_examples.model.Parent;
 import org.junit.Test;
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Set;
+import java.util.UUID;
 
 import static com.google.common.collect.ImmutableSet.of;
 import static java.util.Collections.emptySet;
@@ -21,7 +21,11 @@ public class ReplaceChildTest {
 
     @Test
     public void createAndRetrieveParentWithNoChildren() throws Exception {
-        final Serializable parentId = sessionFactory.with(session -> session.save(new Parent("parent")));
+        final UUID parentId = sessionFactory.with(session -> {
+            Parent parent = new Parent("parent");
+            session.save(parent);
+            return parent.getId();
+        });
 
         sessionFactory.with(session -> {
             final Parent parent = session.load(Parent.class, parentId);
@@ -34,10 +38,11 @@ public class ReplaceChildTest {
 
     @Test
     public void createAndRetrieveParent() throws Exception {
-        final Serializable parentId = sessionFactory.with(session -> {
+        final UUID parentId = sessionFactory.with(session -> {
             final Parent parent = new Parent("parent");
             parent.addChild("child");
-            return session.save(parent);
+            session.save(parent);
+            return parent.getId();
         });
 
         sessionFactory.with(session -> {
@@ -63,11 +68,12 @@ public class ReplaceChildTest {
 
     private void testReplaceAllChildren(final String initialChildName, final String newChildName) {
 
-        final Serializable parentId = sessionFactory.with(session -> {
+        final UUID parentId = sessionFactory.with(session -> {
             final Parent parent = new Parent("parent");
             parent.addChild("unchanged");
             parent.addChild(initialChildName);
-            return session.save(parent);
+            session.save(parent);
+            return parent.getId();
         });
 
         sessionFactory.with(session -> {
@@ -98,11 +104,12 @@ public class ReplaceChildTest {
 
     private void testReplaceChild(final String initialChildName, final String newChildName) {
 
-        final Serializable parentId = sessionFactory.with(session -> {
+        final UUID parentId = sessionFactory.with(session -> {
             final Parent parent = new Parent("parent");
             parent.addChild("unchanged");
             parent.addChild(initialChildName);
-            return session.save(parent);
+            session.save(parent);
+            return parent.getId();
         });
 
         sessionFactory.with(session -> {

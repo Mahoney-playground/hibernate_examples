@@ -4,24 +4,18 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.hash;
-import static java.util.UUID.randomUUID;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"NAME", "PARENT_ID"}))
-public class Child {
-
-    @Id
-    private UUID id;
+public class Child extends hibernate_examples.hibernate.Entity {
 
     @Column(nullable = false)
     private String name;
@@ -30,13 +24,8 @@ public class Child {
     private Parent parent;
 
     Child(Parent parent, String name) {
-        this.id = randomUUID();
         this.parent = checkNotNull(parent);
         this.name = checkNotNull(name);
-    }
-
-    public UUID getId() {
-        return id;
     }
 
     public String getName() {

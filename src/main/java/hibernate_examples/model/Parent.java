@@ -5,13 +5,11 @@ import org.hibernate.Hibernate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.unmodifiableSet;
@@ -19,25 +17,21 @@ import static javax.persistence.CascadeType.ALL;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
-public class Parent implements hibernate_examples.hibernate.Entity {
-
-    @Id
-    private UUID id;
+public class Parent extends hibernate_examples.hibernate.Entity {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String mutableState;
 
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = ALL, orphanRemoval = true)
     private Set<Child> children;
 
     public Parent(String name) {
-        this.id = UUID.randomUUID();
         this.name = checkNotNull(name);
         this.children = new HashSet<>();
-    }
-
-    public UUID getId() {
-        return id;
+        this.mutableState = "";
     }
 
     public String getName() {
@@ -70,6 +64,14 @@ public class Parent implements hibernate_examples.hibernate.Entity {
         return addChild(name);
     }
 
+    public String getMutableState() {
+        return mutableState;
+    }
+
+    public void setMutableState(String mutableState) {
+        this.mutableState = checkNotNull(mutableState);
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -89,6 +91,7 @@ public class Parent implements hibernate_examples.hibernate.Entity {
     public final String toString() {
         return "Parent{" +
                 "name='" + getName() + '\'' +
+                "mutableState='" + getMutableState() + '\'' +
                 ", children=" + getChildren() +
                 '}';
     }
