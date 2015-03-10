@@ -1,7 +1,5 @@
 package hibernate_examples.model;
 
-import org.hibernate.Hibernate;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -39,7 +37,7 @@ public class Child extends hibernate_examples.hibernate.Entity {
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass(this) != getClass(o)) return false;
 
         final Child child = (Child) o;
 

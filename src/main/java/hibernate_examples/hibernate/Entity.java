@@ -1,5 +1,7 @@
 package hibernate_examples.hibernate;
 
+import org.hibernate.Hibernate;
+
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
@@ -15,6 +17,10 @@ public abstract class Entity {
 
     @Version
     protected Long version = null;
+
+    protected static Class getClass(Object proxy) {
+        return Hibernate.getClass(proxy);
+    }
 
     public UUID getId() {
         return id;
