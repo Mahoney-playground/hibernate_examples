@@ -1,10 +1,11 @@
 package hibernate_examples.hibernate;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.ofNullable;
 
 public class Session {
@@ -31,8 +32,8 @@ public class Session {
         return (T) session.get(type, id);
     }
 
-    public <T> Collection<? extends T> loadAll(Class<T> type) {
-        return session.createCriteria(type).list();
+    public <T extends Entity> List<T> loadAll(Class<T> type) {
+        return unmodifiableList(session.createCriteria(type).list());
     }
 
     public <T extends Entity> T save(T transientEntity) {
