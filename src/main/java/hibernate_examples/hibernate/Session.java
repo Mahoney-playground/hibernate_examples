@@ -1,6 +1,6 @@
 package hibernate_examples.hibernate;
 
-import hibernate_examples.lang.PoolableResource;
+import hibernate_examples.lang.pool.Reusable;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,7 +10,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.ofNullable;
 
-public class Session implements PoolableResource {
+public class Session implements Reusable {
 
     private final org.hibernate.Session session;
 

@@ -2,7 +2,7 @@ package hibernate_examples;
 
 import hibernate_examples.hibernate.Session;
 import hibernate_examples.hibernate.SessionFactory;
-import hibernate_examples.lang.PoolFactory;
+import hibernate_examples.lang.pool.PoolFactory;
 import hibernate_examples.model.Parent;
 import org.junit.Test;
 

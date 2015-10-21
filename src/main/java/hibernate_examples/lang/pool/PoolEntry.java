@@ -1,10 +1,11 @@
-package hibernate_examples.lang;
+package hibernate_examples.lang.pool;
 
+import hibernate_examples.lang.ResourceFactory;
 import uk.org.lidalia.lang.Exceptions;
 
 import java.util.concurrent.CountDownLatch;
 
-class PoolEntry<R extends PoolableResource> {
+class PoolEntry<R extends Reusable> {
 
     private final CountDownLatch ready = new CountDownLatch(1);
     private final CountDownLatch notNeeded = new CountDownLatch(1);
@@ -12,14 +13,15 @@ class PoolEntry<R extends PoolableResource> {
 
     private volatile R resource;
 
-    PoolEntry(ResourceFactory<R> factory) {
+    PoolEntry(ResourceFactory<R> factory, Notifier notifier, String poolId) {
         this.thread = new Thread(() -> {
             factory.with(resource -> {
                 this.resource = resource;
                 ready.countDown();
+                notifier.entryCreated(poolId, PoolEntry.this.toString());
                 waitUntilNotNeeded();
-                this.resource = null;
             });
+            notifier.entryDestroyed(poolId, toString());
         });
         this.thread.start();
     }
@@ -59,6 +61,6 @@ class PoolEntry<R extends PoolableResource> {
 
     @Override
     public String toString() {
-        return super.toString()+'['+resource+']';
+        return super.toString()+'['+getResource()+']';
     }
 }
