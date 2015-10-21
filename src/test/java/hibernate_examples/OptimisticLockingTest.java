@@ -26,14 +26,12 @@ public class OptimisticLockingTest {
         sessionFactory.with(session -> {
             Parent parent = session.load(Parent.class, detached.getId());
             parent.setMutableState("new stuff!");
-            return null;
         });
 
         try {
             sessionFactory.with(session -> {
                 session.save(detached);
                 detached.setMutableState("other stuff - shouldn't work!");
-                return null;
             });
             fail("Should throw StaleObjectStateException");
         } catch (StaleObjectStateException e) {
@@ -43,7 +41,6 @@ public class OptimisticLockingTest {
         sessionFactory.with(session -> {
             Parent parent = session.load(Parent.class, detached.getId());
             assertThat(parent.getMutableState(), is("new stuff!"));
-            return null;
         });
     }
 
@@ -61,10 +58,8 @@ public class OptimisticLockingTest {
                 sessionFactory.with(concurrentSession -> {
                     Parent concurrentParent = concurrentSession.load(Parent.class, parentId);
                     concurrentParent.setMutableState("new stuff!");
-                    return null;
                 });
                 parent.setMutableState("shouldn't work, out of date!");
-                return null;
             });
             fail("Should throw StaleObjectStateException");
         } catch (StaleObjectStateException e) {
@@ -74,7 +69,6 @@ public class OptimisticLockingTest {
         sessionFactory.with(session -> {
             Parent parent = session.load(Parent.class, parentId);
             assertThat(parent.getMutableState(), is("new stuff!"));
-            return null;
         });
     }
 }

@@ -31,7 +31,6 @@ public class ChildEqualsTest {
             assertThat(child, is(unpersistedChild));
             assertThat(unpersistedChild, is(child));
             assertThat(child.hashCode(), is(unpersistedChild.hashCode()));
-            return null;
         });
     }
 }

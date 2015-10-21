@@ -32,7 +32,6 @@ public class ReplaceChildTest {
             Parent expected = new Parent("parent");
             assertThat(parent, is(expected));
             assertThat(parent.getChildren(), is(emptySet()));
-            return null;
         });
     }
 
@@ -50,7 +49,6 @@ public class ReplaceChildTest {
             Parent expected = new Parent("parent");
             expected.addChild("child");
             assertThat(parent, is(expected));
-            return null;
         });
     }
 
@@ -79,14 +77,12 @@ public class ReplaceChildTest {
         sessionFactory.with(session -> {
             session.load(Parent.class, parentId)
                     .replaceAllChildrenWith(newChildName);
-            return null;
         });
 
         sessionFactory.with(session -> {
             final Parent parent = session.load(Parent.class, parentId);
             final Set<String> namesOfChildren = parent.getChildren().stream().map(Child::getName).collect(toSet());
             assertThat(namesOfChildren, is(of(newChildName)));
-            return null;
         });
     }
 
@@ -115,14 +111,12 @@ public class ReplaceChildTest {
         sessionFactory.with(session -> {
             session.load(Parent.class, parentId)
                     .replaceChild(initialChildName, newChildName);
-            return null;
         });
 
         sessionFactory.with(session -> {
             final Parent parent = session.load(Parent.class, parentId);
             final Set<String> namesOfChildren = parent.getChildren().stream().map(Child::getName).collect(toSet());
             assertThat(namesOfChildren, is(of("unchanged", newChildName)));
-            return null;
         });
     }
 }

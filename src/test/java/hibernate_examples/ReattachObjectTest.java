@@ -28,7 +28,6 @@ public class ReattachObjectTest {
             Parent parent = session.load(Parent.class, detached.getId());
             assertThat(parent.getMutableState(), is("new stuff!"));
             System.out.println(session.loadAll(Parent.class));
-            return null;
         });
     }
 }
