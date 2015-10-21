@@ -56,4 +56,9 @@ class PoolEntry<R extends PoolableResource> {
             Exceptions.throwUnchecked(e);
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+'['+resource+']';
+    }
 }

@@ -55,4 +55,9 @@ public class Pool<R extends PoolableResource> implements ResourceFactory<R> {
             loaned.clear();
         });
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+'['+factory+']';
+    }
 }

@@ -19,4 +19,9 @@ public class PoolFactory<R extends PoolableResource> implements ResourceFactory<
             pool.close();
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+'['+factory+']';
+    }
 }
