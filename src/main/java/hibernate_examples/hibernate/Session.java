@@ -65,6 +65,11 @@ public class Session implements Reusable {
     }
 
     @Override
+    public State check() {
+        return State.OK;
+    }
+
+    @Override
     public void reset() {
         flush();
     }

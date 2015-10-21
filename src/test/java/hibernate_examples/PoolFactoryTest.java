@@ -19,13 +19,14 @@ public class PoolFactoryTest {
 
     @Test
     public void createAndRetrieveParentWithNoChildren() throws Exception {
-        final UUID parentId = sessionFactory.with(session -> {
-            Parent parent = new Parent("parent");
-            session.save(parent);
-            return parent.getId();
-        });
 
         sessionPoolFactory.with(pool -> {
+            final UUID parentId = pool.with(session -> {
+                Parent parent = new Parent("parent");
+                session.save(parent);
+                return parent.getId();
+            });
+
             pool.with(session -> {
                 final Parent parent = session.load(Parent.class, parentId);
                 Parent expected = new Parent("parent");
