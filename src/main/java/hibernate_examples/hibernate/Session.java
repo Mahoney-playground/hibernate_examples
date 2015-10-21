@@ -1,5 +1,7 @@
 package hibernate_examples.hibernate;
 
+import hibernate_examples.lang.PoolableResource;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,7 +10,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Optional.ofNullable;
 
-public class Session {
+public class Session implements PoolableResource {
 
     private final org.hibernate.Session session;
 
@@ -60,5 +62,10 @@ public class Session {
 
     public void flush() {
         session.flush();
+    }
+
+    @Override
+    public void reset() {
+        flush();
     }
 }
