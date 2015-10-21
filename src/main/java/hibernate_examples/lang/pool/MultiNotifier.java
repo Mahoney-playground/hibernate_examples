@@ -15,12 +15,12 @@ public class MultiNotifier implements Notifier {
     }
 
     @Override
-    public void entryEvent(EventType event, String poolId, String id) {
-        notifiers.stream().forEach( n -> n.entryEvent(event, poolId, id));
+    public void entryEvent(EventType event, PoolSnapshot snapshot, String id) {
+        notifiers.stream().forEach( n -> n.entryEvent(event, snapshot, id));
     }
 
     @Override
-    public void poolEvent(EventType event, String poolId) {
-        notifiers.stream().forEach( n -> n.poolEvent(event, poolId));
+    public void poolEvent(EventType event, PoolSnapshot snapshot) {
+        notifiers.stream().forEach( n -> n.poolEvent(event, snapshot));
     }
 }

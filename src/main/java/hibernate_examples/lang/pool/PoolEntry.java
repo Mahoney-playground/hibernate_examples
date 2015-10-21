@@ -13,15 +13,15 @@ class PoolEntry<R extends Reusable> {
 
     private volatile R resource;
 
-    PoolEntry(ResourceFactory<R> factory, Notifier notifier, String poolId) {
+    PoolEntry(ResourceFactory<R> factory, Notifier notifier, Pool pool) {
         this.thread = new Thread(() -> {
             factory.with(resource -> {
                 this.resource = resource;
                 ready.countDown();
-                notifier.entryCreated(poolId, PoolEntry.this.toString());
+                notifier.entryCreated(pool.snapshot(), PoolEntry.this.toString());
                 waitUntilNotNeeded();
             });
-            notifier.entryDestroyed(poolId, toString());
+            notifier.entryDestroyed(pool.snapshot(), toString());
         });
         this.thread.start();
     }

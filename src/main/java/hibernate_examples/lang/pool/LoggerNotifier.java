@@ -16,22 +16,22 @@ public class LoggerNotifier implements Notifier {
     }
 
     @Override
-    public void entryEvent(EventType event, String poolId, String id) {
-        log.debug("{}: {} of pool {}", event, id, poolId);
+    public void entryEvent(EventType event, PoolSnapshot snapshot, String id) {
+        log.debug("{}: {} of pool {}", event, id, snapshot.getPool());
     }
 
     @Override
-    public void poolEvent(EventType event, String poolId) {
-        log.info("{}: {}", event, poolId);
+    public void poolEvent(EventType event, PoolSnapshot snapshot) {
+        log.info("{}: {}", event, snapshot.getPool());
     }
 
     @Override
-    public void entryCreated(String poolId, String entry) {
-        log.info("{}: {} of pool {}", EventType.ENTRY_CREATED, entry, poolId);
+    public void entryCreated(PoolSnapshot snapshot, String entry) {
+        log.info("{}: {} of pool {}", EventType.ENTRY_CREATED, entry, snapshot.getPool());
     }
 
     @Override
-    public void entryDestroyed(String poolId, String entry) {
-        log.info("{}: {} of pool {}", EventType.ENTRY_DESTROYED, entry, poolId);
+    public void entryDestroyed(PoolSnapshot snapshot, String entry) {
+        log.info("{}: {} of pool {}", EventType.ENTRY_DESTROYED, entry, snapshot.getPool());
     }
 }

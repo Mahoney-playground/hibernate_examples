@@ -30,13 +30,13 @@ public class Pool<R extends Reusable> implements ResourceFactory<R> {
     @Override
     public <T> T with(Function<R, T> work) {
         PoolEntry<R> entry = lock.writeLock().with(this::loan);
-        notifier.entryLoaned(entry.toString(), toString());
+        notifier.entryLoaned(this.snapshot(), entry.toString());
         try {
             return work.apply(entry.getResource());
         } finally {
             entry.reset();
             lock.writeLock().with(() -> returns(entry));
-            notifier.entryReturned(entry.toString(), toString());
+            notifier.entryReturned(this.snapshot(), entry.toString());
         }
     }
 
@@ -47,7 +47,7 @@ public class Pool<R extends Reusable> implements ResourceFactory<R> {
     }
 
     private PoolEntry<R> build() {
-        return new PoolEntry<>(factory, notifier, this.toString());
+        return new PoolEntry<>(factory, notifier, this);
     }
 
     private void returns(PoolEntry<R> entry) {
@@ -56,14 +56,12 @@ public class Pool<R extends Reusable> implements ResourceFactory<R> {
     }
 
     void close() {
-        lock.writeLock().with(() -> {
-            idle.stream().forEach(PoolEntry::notNeeded);
-            loaned.stream().forEach(PoolEntry::notNeeded);
-            idle.stream().forEach(PoolEntry::awaitClosed);
-            loaned.stream().forEach(PoolEntry::awaitClosed);
-            idle.clear();
-            loaned.clear();
-        });
+        idle.stream().forEach(PoolEntry::notNeeded);
+        loaned.stream().forEach(PoolEntry::notNeeded);
+        idle.stream().forEach(PoolEntry::awaitClosed);
+        loaned.stream().forEach(PoolEntry::awaitClosed);
+        idle.clear();
+        loaned.clear();
     }
 
     public PoolSnapshot snapshot() {

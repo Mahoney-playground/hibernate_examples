@@ -21,12 +21,12 @@ public class PoolFactory<R extends Reusable> implements ResourceFactory<Pool<R>>
     @Override
     public <T> T with(Function<Pool<R>, T> work) {
         Pool<R> pool = new Pool<>(factory, notifier);
-        notifier.poolCreated(pool.toString());
+        notifier.poolCreated(pool.snapshot());
         try {
             return work.apply(pool);
         } finally {
             pool.close();
-            notifier.poolClosed(pool.toString());
+            notifier.poolClosed(pool.snapshot());
         }
     }
 
