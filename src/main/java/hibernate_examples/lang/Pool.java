@@ -15,7 +15,7 @@ public class Pool<R extends PoolableResource> implements ResourceFactory<R> {
     private final Queue<PoolEntry<R>> idle = new LinkedList<>();
     private final Set<PoolEntry<R>> loaned = new HashSet<>();
 
-    public Pool(ResourceFactory<R> factory) {
+    Pool(ResourceFactory<R> factory) {
         this.factory = factory;
     }
 
