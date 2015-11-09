@@ -63,4 +63,8 @@ class PoolEntry<R extends Reusable> {
     public String toString() {
         return super.toString()+'['+getResource()+']';
     }
+
+    public void onError() {
+        getResource().onError();
+    }
 }

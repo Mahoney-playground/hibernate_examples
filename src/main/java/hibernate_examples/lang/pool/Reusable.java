@@ -2,10 +2,12 @@ package hibernate_examples.lang.pool;
 
 public interface Reusable {
 
-    enum State { BROKEN, OK }
+    enum State { BROKEN, OK, CLOSED, DIRTY }
 
-    State check();
+    default State check() { return State.OK; }
 
-    void reset();
+    default void onError() { reset(); }
+
+    default void reset() {}
 
 }

@@ -13,9 +13,11 @@ import static java.util.Optional.ofNullable;
 public class Session implements Reusable {
 
     private final org.hibernate.Session session;
+    private final org.hibernate.Transaction transaction;
 
     Session(org.hibernate.Session session) {
         this.session = session;
+        this.transaction = session.beginTransaction();
     }
 
     public <T extends Entity> Optional<T> get(Class<T> type, UUID id) {
@@ -54,7 +56,7 @@ public class Session implements Reusable {
 
     void close() {
         try {
-            flush();
+            endTransaction();
         } finally {
             session.close();
         }
@@ -70,7 +72,20 @@ public class Session implements Reusable {
     }
 
     @Override
+    public void onError() {
+        transaction.rollback();
+        session.clear();
+    }
+
+    @Override
     public void reset() {
+        endTransaction();
+    }
+
+    private void endTransaction() {
         flush();
+        if (transaction.isActive()) {
+            transaction.commit();
+        }
     }
 }

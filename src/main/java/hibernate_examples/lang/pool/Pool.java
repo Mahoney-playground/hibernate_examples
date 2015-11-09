@@ -33,6 +33,9 @@ public class Pool<R extends Reusable> implements ResourceFactory<R> {
         notifier.entryLoaned(this.snapshot(), entry.toString());
         try {
             return work.apply(entry.getResource());
+        } catch(Exception e) {
+            entry.onError();
+            throw e;
         } finally {
             entry.reset();
             lock.writeLock().with(() -> returns(entry));
@@ -65,13 +68,16 @@ public class Pool<R extends Reusable> implements ResourceFactory<R> {
     }
 
     public PoolSnapshot snapshot() {
-        return lock.readLock().with(() -> new PoolSnapshot(
+        return lock.readLock().with(this::takeSnapshot);
+    }
+
+    private PoolSnapshot takeSnapshot() {
+        return new PoolSnapshot(
             Instant.now(),
             toString(),
             factory.getClass(),
             idle.stream().map(PoolEntry::toString).collect(Collectors.immutableSet()),
             loaned.stream().map(PoolEntry::toString).collect(Collectors.immutableSet())
-        )
         );
     }
 
